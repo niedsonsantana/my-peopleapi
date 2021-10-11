@@ -8,10 +8,8 @@ import one.digitalinnovation.personapi.mapper.PersonMapper;
 import one.digitalinnovation.personapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,10 +42,20 @@ public class PersonService {
     }
 
     public PersonDTO findById(Long id) throws PersonNotFoundException {
-        Person person = personRepository.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
-        //Optional<Person> optionalPerson = personRepository.findById(id);
+        Person person = verifyIfExits(id);
         return personMapper.toDTO(person);
 
     }
+
+    public void delete(Long id) throws PersonNotFoundException {
+        verifyIfExits(id);
+        personRepository.deleteById(id);
+    }
+    public Person verifyIfExits(Long id) throws PersonNotFoundException {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
+        //Optional<Person> optionalPerson = personRepository.findById(id);
+
+    }
+
 }
